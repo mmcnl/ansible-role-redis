@@ -1,0 +1,3 @@
+---
+dependencies:
+- role: mmcnl.monit_handlers

@@ -1,0 +1,29 @@
+---
+- name: Collect minimal facts for use by geerlingguy.redis role
+  setup:
+    gather_subset:
+      - '!all'
+      - '!any'
+      - min
+
+- name: custom redis install
+  include_role:
+    name: geerlingguy.redis
+
+- name: watch redis with monit
+  template:
+    src: redis-monit.j2
+    dest: /etc/monit/conf.d/redis
+    mode: 0600
+  notify: reload monit
+
+- name: Open redis port to deployed machines only
+  ufw:
+    rule: allow
+    port: "{{ redis_port }}"
+    src: "{{ item }}"
+    proto: tcp
+  # allow access from all stockfish workers
+  with_items: "{{ permitted_client_ips }}"
+  notify:
+    - restart ufw
