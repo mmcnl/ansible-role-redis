@@ -9,6 +9,15 @@
 - name: custom redis install
   include_role:
     name: geerlingguy.redis
+  vars:
+    redis_requirepass: "{{ redis_password }}"
+
+- name: ensure permissions of redis conf file
+  file:
+    path: /etc/redis/redis.conf
+    owner: redis
+    group: "{{ redis_conf_file_group }}"
+    mode: 0640
 
 - name: watch redis with monit
   template:
@@ -23,7 +32,5 @@
     port: "{{ redis_port }}"
     src: "{{ item }}"
     proto: tcp
-  # allow access from all stockfish workers
-  with_items: "{{ permitted_client_ips }}"
-  notify:
-    - restart ufw
+  with_items: "{{ redis_permitted_client_ips }}"
+  notify: restart ufw
