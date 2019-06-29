@@ -10,6 +10,7 @@
   include_role:
     name: geerlingguy.redis
   vars:
+    redis_bind_interface: "{{ redis_custom_bind_interface }}"
     redis_requirepass: "{{ redis_password }}"
 
 - name: ensure permissions of redis conf file
