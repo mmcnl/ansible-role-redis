@@ -1,4 +1,3 @@
 ---
 dependencies:
   - role: mmcnl.monit_handlers
-  - { role: "geerlingguy.redis", when: False } # use import_role later

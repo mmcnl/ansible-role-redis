@@ -4,3 +4,9 @@
     name: ufw
     enabled: yes
     state: restarted
+
+- name: restart redis
+  systemd:
+    name: redis
+    enabled: yes
+    state: restarted
