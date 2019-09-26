@@ -1,15 +1,15 @@
 # -*- mode: conf -*-
 # {{ ansible_managed }}
 
-daemonize yes
-pidfile /var/run/redis/redis-server.pid
+daemonize no
+pidfile /var/run/{{ redis_service_name }}.pid
 port {{ redis_port }}
 bind {{ redis_bind_interface }}
 
 timeout 300
 
 loglevel notice
-logfile /var/log/redis/redis-server.log
+logfile /var/log/redis/{{ redis_service_name }}.log
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
@@ -24,7 +24,7 @@ save 300 10
 save 60 10000
 
 rdbcompression yes
-dbfilename dump.rdb
+dbfilename {{ redis_service_name }}-dump.rdb
 dir /var/lib/redis
 
 # maxclients 128
@@ -35,4 +35,9 @@ no-appendfsync-on-rewrite no
 
 {% if redis_password %}
 requirepass {{ redis_password }}
+{% endif %}
+
+{% if redis_maxmemory %}
+maxmemory {{ redis_maxmemory }}
+maxmemory-policy {{ redis_maxmemory_policy }}
 {% endif %}

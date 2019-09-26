@@ -1,0 +1,19 @@
+# -*- mode: systemd -*-
+# {{ ansible_managed }}
+
+[Unit]
+Description={{ redis_service_name }}
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/redis-server /etc/redis/{{ redis_service_name }}.conf
+Restart=on-failure
+RestartSec=60
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier={{ redis_service_name }}
+
+[Install]
+WantedBy=multi-user.target
+Alias={{ redis_service_name }}.service

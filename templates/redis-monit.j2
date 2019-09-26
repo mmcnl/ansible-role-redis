@@ -1,5 +1,5 @@
 # -*- mode: conf -*-
 # {{ ansible_managed }}
 
-check process redis with pidfile /var/run/redis/redis-server.pid
+check process {{ redis_service_name }} with pidfile /var/run/{{ redis_service_name }}.pid
    if failed host localhost port {{ redis_port }} protocol redis then alert

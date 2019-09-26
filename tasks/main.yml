@@ -4,19 +4,45 @@
     name: redis-server
     state: present
 
+- name: remove default redis service
+  block:
+    - name: remove default config file
+      file:
+        path: /etc/redis/redis.conf
+        state: absent
+
+    - name: disable default redis service
+      systemd:
+        name: redis-server
+        enabled: no
+        state: stopped
+      ignore_errors: yes
+  when: redis_remove_default_service
+
+- name: update redis systemd service config
+  template:
+    src: redis.service.j2
+    dest: "/lib/systemd/system/{{ redis_service_name }}.service"
+  notify: restart redis
+
 - name: install redis config
   template:
     src: redis.conf.j2
-    dest: /etc/redis/redis.conf
+    dest: "/etc/redis/{{ redis_service_name }}.conf"
     owner: redis
     group: "{{ redis_conf_file_group }}"
     mode: 0640
   notify: restart redis
 
+- name: ensure service is enabled
+  systemd:
+    name: "{{ redis_service_name }}"
+    enabled: yes
+
 - name: watch redis with monit
   template:
     src: redis-monit.j2
-    dest: /etc/monit/conf.d/redis
+    dest: "/etc/monit/conf.d/{{ redis_service_name }}"
     mode: 0600
   notify: reload monit
 
