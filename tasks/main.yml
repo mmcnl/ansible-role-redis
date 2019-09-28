@@ -48,9 +48,11 @@
 
 - name: Open redis port to deployed machines only
   ufw:
+    comment: "{{ redis_service_name }}"
     rule: allow
     port: "{{ redis_port }}"
     src: "{{ item }}"
     proto: tcp
   with_items: "{{ redis_permitted_client_ips }}"
   notify: restart ufw
+  tags: ufw
