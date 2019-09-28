@@ -9,13 +9,12 @@ bind {{ redis_bind_interface }}
 timeout 300
 
 loglevel notice
-logfile /var/log/redis/{{ redis_service_name }}.log
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
-# syslog-enabled no
-# syslog-ident redis
-# syslog-facility local0
+syslog-enabled yes
+syslog-ident {{ redis_service_name }}
+syslog-facility local0
 
 databases 16
 
